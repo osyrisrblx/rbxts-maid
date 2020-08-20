@@ -2,7 +2,7 @@
 Quenty's Maid class with types!
 
 ```TS
-import Maid from "./Maid";
+import Maid from "@rbxts/maid";
 
 const maid = new Maid();
 maid.GiveTask(() => print("Clean me!"));
