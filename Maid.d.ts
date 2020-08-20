@@ -7,7 +7,9 @@ declare namespace Maid {
 	export type Task = (() => any) | RBXScriptConnection | Maid | Maid.Destroyable;
 }
 
-interface Maid {
+type Maid = {
+	[index in number | string]: Maid.Task | undefined;
+} & {
 	/**
 	 * Adds a task to perform.
 	 * Tasks can be:
