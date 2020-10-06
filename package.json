@@ -22,8 +22,8 @@
 	"devDependencies": {
 		"@rbxts/types": "^1.0.320"
 	},
-  "files": [
-    "Maid.d.ts",
-    "Maid.lua"
-  ]
+	"files": [
+		"Maid.d.ts",
+		"Maid.lua"
+	]
 }
