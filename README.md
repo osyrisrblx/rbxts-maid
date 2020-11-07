@@ -1,5 +1,5 @@
 # rbxts-maid
-Quenty's Maid class with types!
+Quenty's [Maid](https://github.com/Quenty/NevermoreEngine/blob/version2/Modules/Shared/Events/Maid.lua) class with types!
 
 ```TS
 import Maid from "@rbxts/maid";
