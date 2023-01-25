@@ -31,22 +31,30 @@ end
 -- @usage
 -- Maid[key] = (function)         Adds a task to perform
 -- Maid[key] = (event connection) Manages an event connection
+-- Maid[key] = (thread)           Manages a thread
 -- Maid[key] = (Maid)             Maids can act as an event connection, allowing a Maid to have other maids to clean up.
 -- Maid[key] = (Object)           Maids can cleanup objects with a `Destroy` method
 -- Maid[key] = nil                Removes a named task. If the task is an event, it is disconnected. If it is an object,
 --                                it is destroyed.
 function Maid:__newindex(index, newTask)
 	if Maid[index] ~= nil then
-		error(("'%s' is reserved"):format(tostring(index)), 2)
+		error(("Cannot use '%s' as a Maid key"):format(tostring(index)), 2)
 	end
 
 	local tasks = self._tasks
 	local oldTask = tasks[index]
+
+	if oldTask == newTask then
+        	return
+	end
+
 	tasks[index] = newTask
 
 	if oldTask then
 		if type(oldTask) == "function" then
 			oldTask()
+		elseif type(oldTask) == "thread" then
+			task.cancel(oldTask)
 		elseif typeof(oldTask) == "RBXScriptConnection" then
 			oldTask:Disconnect()
 		elseif oldTask.Destroy then
@@ -93,25 +101,27 @@ function Maid:DoCleaning()
 	local tasks = self._tasks
 
 	-- Disconnect all events first as we know this is safe
-	for index, task in pairs(tasks) do
-		if typeof(task) == "RBXScriptConnection" then
+	for index, job in pairs(tasks) do
+		if typeof(job) == "RBXScriptConnection" then
 			tasks[index] = nil
-			task:Disconnect()
+			job:Disconnect()
 		end
 	end
 
 	-- Clear out tasks table completely, even if clean up tasks add more tasks to the maid
-	local index, task = next(tasks)
-	while task ~= nil do
+	local index, job = next(tasks)
+	while job ~= nil do
 		tasks[index] = nil
-		if type(task) == "function" then
-			task()
-		elseif typeof(task) == "RBXScriptConnection" then
-			task:Disconnect()
-		elseif task.Destroy then
-			task:Destroy()
+		if type(job) == "function" then
+			job()
+		elseif type(job) == "thread" then
+			task.cancel(job)
+		elseif typeof(job) == "RBXScriptConnection" then
+			job:Disconnect()
+		elseif job.Destroy then
+			job:Destroy()
 		end
-		index, task = next(tasks)
+		index, job = next(tasks)
 	end
 end
 
