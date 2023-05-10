@@ -4,7 +4,7 @@ declare namespace Maid {
 	export interface Destroyable {
 		Destroy(): void;
 	}
-	export type Task = (() => any) | RBXScriptConnection | Maid | Maid.Destroyable;
+	export type Task = (() => any) | thread | RBXScriptConnection | Maid | Maid.Destroyable;
 }
 
 type Maid = {
@@ -14,6 +14,7 @@ type Maid = {
 	 * Adds a task to perform.
 	 * Tasks can be:
 	 * - a function
+	 * - a thread
 	 * - a RBXScriptConnection
 	 * - a Maid
 	 * - an object with a Destroy() method
